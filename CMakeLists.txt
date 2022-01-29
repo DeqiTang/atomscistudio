@@ -42,9 +42,20 @@ file(GLOB PROJECT_SOURCES
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(atomscistudio
-        ${PROJECT_SOURCES}
-    )
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        set(MACOSX TRUE)
+        qt_add_executable(atomscistudio
+            MACOSX_BUNDLE
+            ${PROJECT_SOURCES}
+        )
+        set_target_properties(atomscistudio PROPERTIES
+            BUNDLE True
+        )
+    else()
+        qt_add_executable(atomscistudio
+            ${PROJECT_SOURCES}
+        )
+    endif()        
 else()
     if(ANDROID)
         add_library(atomscistudio SHARED
@@ -80,5 +91,6 @@ install(
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
+    BUNDLE DESTINATION bin # important for building on macos with -DCMAKE_MACOSX_BUNDLE=True
 )
 
