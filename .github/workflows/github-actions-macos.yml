@@ -11,11 +11,16 @@ jobs:
     runs-on: [macos-10.15] 
     strategy:
       matrix:
-        os: [macos-10.15]
-        qt_version: [6.2.0]
+        os: [macos-12, macos-11, macos-10.15]
+        qt_version: [6.2.2]
     env:
       executable: atomscistudio
     steps:
+      - name: Install dependencies using brew
+        run: |
+          brew install llvm 
+          brew install openssl@3
+          #brew install qt
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.14.0
         with:
@@ -24,7 +29,13 @@ jobs:
           target: 'desktop'
           aqtversion: '==2.0.5'
           modules: 'qt3d'
-        #run: brew install qt
+      - name: Install libssh2
+        run: |
+          wget -c https://github.com/libssh2/libssh2/releases/download/libssh2-1.10.0/libssh2-1.10.0.tar.gz
+          tar -xvf libssh2-1.10.0.tar.gz
+          cmake libssh2-1.10.0 -B build_libssh2
+          cmake --build build_libssh2
+          cmake --install build_libssh2       
       - name: Install boost
         run: brew install boost
       - name: Install gtest
@@ -34,7 +45,7 @@ jobs:
       - name: Install atomsciflow
         run: |
           git clone https://github.com/deqitang/atomsciflow.git
-          cmake atomsciflow -B build
+          cmake atomsciflow -B build -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl@3
           cmake --build build
           cmake --install build
         shell: bash
@@ -43,12 +54,12 @@ jobs:
           fetch-depth: 1
       - name: Build for MacOS
         run: |
-          cmake -B build -DCMAKE_MACOSX_BUNDLE=True
-          cmake --build build
+          cmake -B build -DCMAKE_MACOSX_BUNDLE=True -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl@3
+          cmake --build build --config Release
           cmake --install build
       - name: packaging
         run: |
-          macdeployqt build/${executable}.app -verbose=1 -dmg
+          macdeployqt build/${executable}.app -verbose=2 -dmg
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ env.executable }}-${{ matrix.os }}-${{matrix.qt_version}}.app

@@ -19,46 +19,20 @@
  ***********************************************************************/
 
 
-// TODO:
-// Currently we use QTabWidget to separate the different space
-// with different functionality, which might be replaced by
-// more flexible QStackWidget + QComboBox in the future.
+#ifndef CALCCONTROL_H
+#define CALCCONTROL_H
 
-
-#ifndef MAIN_MAINWINDOW_H
-#define MAIN_MAINWINDOW_H
-
-#include <QMainWindow>
+#include <QWidget>
 #include <QtWidgets/QHBoxLayout>
-#include <QMenuBar>
 
-#include "modeling/qt3dwindow_custom.h"
-
-
-class MainWindow : public QMainWindow {
+class CalcControl : public QWidget {
     Q_OBJECT
-
 public:
-    MainWindow(QWidget* parent = nullptr);
-    ~MainWindow() {
-    };
+    explicit CalcControl(QWidget *parent = nullptr);
 
-    void export_to_image();
-
-    QWidget* m_central_widget;
-
-    QMenuBar* m_root_menubar;
-
-    QHBoxLayout* m_root_hlayout;
-    QVBoxLayout* m_root_vlayout;
-
-    QTabWidget* m_root_tabwidget;
-
-
-private slots:
-
-private:
+        QHBoxLayout* m_hlayout;
+signals:
 
 };
 
-#endif // MAIN_MAINWINDOW_H
+#endif // CALCCONTROL_H

@@ -19,46 +19,28 @@
  ***********************************************************************/
 
 
-// TODO:
-// Currently we use QTabWidget to separate the different space
-// with different functionality, which might be replaced by
-// more flexible QStackWidget + QComboBox in the future.
+#ifndef RIGHTZONE_H
+#define RIGHTZONE_H
 
-
-#ifndef MAIN_MAINWINDOW_H
-#define MAIN_MAINWINDOW_H
-
-#include <QMainWindow>
+#include <QWidget>
 #include <QtWidgets/QHBoxLayout>
-#include <QMenuBar>
+#include <QtCore/QVariant>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
 
-#include "modeling/qt3dwindow_custom.h"
-
-
-class MainWindow : public QMainWindow {
+class RightZone : public QWidget {
     Q_OBJECT
-
 public:
-    MainWindow(QWidget* parent = nullptr);
-    ~MainWindow() {
-    };
+    explicit RightZone(QWidget *parent = nullptr);
 
-    void export_to_image();
-
-    QWidget* m_central_widget;
-
-    QMenuBar* m_root_menubar;
-
-    QHBoxLayout* m_root_hlayout;
-    QVBoxLayout* m_root_vlayout;
-
-    QTabWidget* m_root_tabwidget;
-
-
-private slots:
-
-private:
+signals:
 
 };
 
-#endif // MAIN_MAINWINDOW_H
+#endif // RIGHTZONE_H

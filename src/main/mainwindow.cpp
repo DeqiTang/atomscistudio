@@ -21,12 +21,16 @@
 
 #include "main/mainwindow.h"
 
+#include <iostream>
 #include <QDebug>
 #include <QSplitter>
+#include <QFileDialog>
+
+#include <atomsciflow/base/crystal.h>
 
 #include "modeling/qt3dwindow_custom.h"
 #include "modeling/tools.h"
-#include "atomsciflow/base/crystal.h"
+#include "calc/calccontrol.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
@@ -39,9 +43,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     file_menu->setObjectName(QObject::tr("File"));
     this->m_root_menubar->addAction(file_menu->menuAction());
     auto action_submenu_of_file = new QAction(this->m_root_menubar);
-    action_submenu_of_file->setObjectName(QObject::tr("Sub of File"));
     file_menu->addAction(action_submenu_of_file);
-    action_submenu_of_file->setText("submenu");
+    action_submenu_of_file->setObjectName(QObject::tr("Export Image"));
+    action_submenu_of_file->setText("Export");
+    QObject::connect(action_submenu_of_file, &QAction::triggered, this, &MainWindow::export_to_image);
 
     auto edit_menu = new QMenu(m_root_menubar);
     edit_menu->setTitle("Edit");
@@ -109,6 +114,17 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     win_container->setMinimumSize(QSize(200, 100));
     win_container->setMaximumSize(screenSize);
 
+    auto tab2 = new CalcControl(this->m_central_widget);
+    this->m_root_tabwidget->addTab(tab2, QObject::tr("Calculation"));
+
 }
 
-
+void MainWindow::export_to_image() {
+    auto fd = new QFileDialog(this->m_central_widget);
+    fd->setWindowTitle(QObject::tr("Output image path"));
+    fd->setViewMode(QFileDialog::Detail);
+    QString file_path;
+    file_path = fd->getSaveFileName(this, tr("Save File"), "export.png");
+    std::cout << file_path.toStdString() << std::endl;
+    delete fd;
+}

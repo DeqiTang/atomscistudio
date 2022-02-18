@@ -17,7 +17,52 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Core OpenGL Gui 3DCore 3DR
 #include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
 
-include_directories(${QT_QTOPENGL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} )
+include_directories(
+    ${QT_QTOPENGL_INCLUDE_DIR} 
+    ${OPENGL_INCLUDE_DIR} 
+)
+
+find_package(Boost COMPONENTS program_options filesystem system  REQUIRED)
+include_directories( 
+    ${Boost_INCLUDE_DIR}  
+)
+
+find_package(OpenSSL REQUIRED)
+if (OPENSSL_FOUND)
+    message("Found OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
+    message("Found OpenSSL SSL library: ${OPENSSL_SSL_LIBRARY}")
+    message("Found OpenSSL Crypto library: ${OPENSSL_CRYPTO_LIBRARY}")
+    link_libraries(OpenSSL::SSL)
+    link_libraries(OpenSSL::Crypto)
+endif()
+
+# libssh2
+find_package(Libssh2 CONFIG)
+if (Libssh2_FOUND)
+    set(LIBSSH2_FOUND_LIBS Libssh2::libssh2)
+else ()
+    find_package(PkgConfig)
+    pkg_check_modules(LIBSSH2 libssh2)
+    link_directories(${LIBSSH2_LIBRARY_DIRS})
+    message("Found libssh2 with PkgConfig")
+    message("Found LIBSSH2_LIBRARY_DIRS: ${LIBSSH2_LIBRARY_DIRS}")
+    message("Found LIBSSH2_LIBRARIES: ${LIBSSH2_LIBRARIES}")
+    set(LIBSSH2_FOUND_LIBS ${LIBSSH2_LIBRARIES})
+endif()
+
+if (NOT DEFINED LIBSSH2_FOUND_LIBS)
+    message("libssh2 not found, neither with cmake, nor PkgConfig")
+    message("Stop cmake")
+    exit()
+endif()
+
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
 
 find_package(Armadillo REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIRS})
@@ -38,6 +83,9 @@ file(GLOB PROJECT_SOURCES
 
     ./src/modeling/*.h
     ./src/modeling/*.cpp
+
+    ./src/calc/*.h
+    ./src/calc/*.cpp
 )
 
 
@@ -68,7 +116,6 @@ else()
     endif()
 endif()
 
-
 target_link_libraries(atomscistudio
     PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
     PRIVATE Qt${QT_VERSION_MAJOR}::OpenGL
@@ -80,6 +127,7 @@ target_link_libraries(atomscistudio
     PRIVATE Qt${QT_VERSION_MAJOR}::Concurrent
     #${OPENGL_LIBRARIES}
     #${GLUT_LIBRARY}
+    ${LIBSSH2_FOUND_LIBS}
 )
 
 # ------------------------------------------------

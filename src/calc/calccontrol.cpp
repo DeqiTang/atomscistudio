@@ -19,46 +19,36 @@
  ***********************************************************************/
 
 
-// TODO:
-// Currently we use QTabWidget to separate the different space
-// with different functionality, which might be replaced by
-// more flexible QStackWidget + QComboBox in the future.
+#include "calccontrol.h"
 
+#include <QTabWidget>
+#include <QCheckBox>
+#include <QSplitter>
 
-#ifndef MAIN_MAINWINDOW_H
-#define MAIN_MAINWINDOW_H
+#include "calc/leftzone.h"
+#include "calc/rightzone.h"
 
-#include <QMainWindow>
-#include <QtWidgets/QHBoxLayout>
-#include <QMenuBar>
+#include <atomsciflow/remote/ssh.h>
 
-#include "modeling/qt3dwindow_custom.h"
+CalcControl::CalcControl(QWidget *parent) : QWidget{parent} {
 
+    this->m_hlayout = new QHBoxLayout(this);
+    this->setLayout(this->m_hlayout);
 
-class MainWindow : public QMainWindow {
-    Q_OBJECT
+    auto h_splitter = new QSplitter(this);
+    this->m_hlayout->addWidget(h_splitter);
 
-public:
-    MainWindow(QWidget* parent = nullptr);
-    ~MainWindow() {
-    };
+    auto left_zone = new LeftZone(this);
+    auto right_zone = new RightZone(this);
+    h_splitter->addWidget(left_zone);
+    h_splitter->addWidget(right_zone);
 
-    void export_to_image();
+    h_splitter->setVisible(true);
+    h_splitter->setHandleWidth(10);
+    h_splitter->setFrameShape(QFrame::StyledPanel);
+    h_splitter->setFrameShadow(QFrame::Plain);
+    h_splitter->setStyleSheet("QSplitter::handle {background-color: gray}");
 
-    QWidget* m_central_widget;
+    atomsciflow::Ssh ssh;
 
-    QMenuBar* m_root_menubar;
-
-    QHBoxLayout* m_root_hlayout;
-    QVBoxLayout* m_root_vlayout;
-
-    QTabWidget* m_root_tabwidget;
-
-
-private slots:
-
-private:
-
-};
-
-#endif // MAIN_MAINWINDOW_H
+}

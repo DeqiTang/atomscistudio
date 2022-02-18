@@ -36,8 +36,8 @@
 #include <QMenu>
 #include <QWidgetAction>
 
-#include "atomsciflow/base/crystal.h"
-#include "atomsciflow/base/atomic_radius.h"
+#include <atomsciflow/base/crystal.h>
+#include <atomsciflow/base/atomic_radius.h>
 #include "modeling/atomic_color.h"
 
 class Atoms3D : public QWidget {
