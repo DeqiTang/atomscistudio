@@ -20,6 +20,7 @@ jobs:
         run: |
           brew install llvm 
           brew install openssl@3
+          brew install yaml-cpp 
           #brew install qt
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.14.0
@@ -45,7 +46,7 @@ jobs:
       - name: Install atomsciflow
         run: |
           git clone https://github.com/deqitang/atomsciflow.git
-          cmake atomsciflow -B build -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl@3
+          cmake atomsciflow -B build -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl@3 
           cmake --build build
           cmake --install build
         shell: bash

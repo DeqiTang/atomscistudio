@@ -27,6 +27,24 @@ include_directories(
     ${Boost_INCLUDE_DIR}  
 )
 
+find_package(PkgConfig)
+set(YAML_CPP_PKGCONFIG_DIR "UNSET" CACHE STRING "Specify the dir path which contains the yaml-cpp.pc file")
+if (NOT ${YAML_CPP_PKGCONFIG_DIR} STREQUAL "UNSET")
+    if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Windows")
+        set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH};${YAML_CPP_PKGCONFIG_DIR}") # separated by semicolon
+    else()
+        set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:${YAML_CPP_PKGCONFIG_DIR}") # separated by colon
+    endif()
+    message(STATUS "PKG_CONFIG_PATH: $ENV{PKG_CONFIG_PATH}")
+endif()    
+pkg_check_modules(YAML_CPP yaml-cpp)
+include_directories(${YAML_CPP_INCLUDE_DIRS})
+link_directories(${YAML_CPP_LIBRARY_DIRS})
+link_libraries(${YAML_CPP_LIBRARIES})
+message("YAML_CPP_INCLUDE_DIRS: ${YAML_CPP_INCLUDE_DIRS}")
+message("YAML_CPP_LIBRARY_DIRS: ${YAML_CPP_LIBRARY_DIRS}")
+message("YAML_CPP_LIBRARIES: ${YAML_CPP_LIBRARIES}")
+
 find_package(OpenSSL REQUIRED)
 if (OPENSSL_FOUND)
     message("Found OpenSSL include dir: ${OPENSSL_INCLUDE_DIR}")
@@ -51,9 +69,8 @@ else ()
 endif()
 
 if (NOT DEFINED LIBSSH2_FOUND_LIBS)
-    message("libssh2 not found, neither with cmake, nor PkgConfig")
-    message("Stop cmake")
-    exit()
+    message(STATUS "libssh2 not found, neither with cmake, nor PkgConfig")
+    message(FATAL_ERROR "Stop cmake due to failure in finding libssh2") # FATAL_ERROR will stop cmake
 endif()
 
 find_package(OpenMP)
@@ -90,7 +107,8 @@ file(GLOB PROJECT_SOURCES
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    #if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
         set(MACOSX TRUE)
         qt_add_executable(atomscistudio
             MACOSX_BUNDLE
@@ -127,6 +145,7 @@ target_link_libraries(atomscistudio
     PRIVATE Qt${QT_VERSION_MAJOR}::Concurrent
     #${OPENGL_LIBRARIES}
     #${GLUT_LIBRARY}
+    ${YAML_CPP_LIBRARIES}
     ${LIBSSH2_FOUND_LIBS}
 )
 
