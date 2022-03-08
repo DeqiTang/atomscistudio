@@ -40,11 +40,10 @@ Qt3DWindowCustom::Qt3DWindowCustom(QWidget* parent, QLayout* vlayout, QHBoxLayou
     this->setRootEntity(m_root_entity);
 
     this->m_right_pop_menu = new QMenu(this->m_root_widget);
-    auto actionDeleteAtom = new QAction(QObject::tr("Delete Atom"), this->m_root_widget);
-    auto actionChangeAtom = new QAction(QObject::tr("Change Atom"), this->m_root_widget);
-    this->m_right_pop_menu->addAction(actionDeleteAtom);
-    this->m_right_pop_menu->addAction(actionChangeAtom);
-
+    auto action_delete_atom = new QAction(QObject::tr("Delete Atom"), this->m_root_widget);
+    auto action_change_atom = new QAction(QObject::tr("Change Atom"), this->m_root_widget);
+    this->m_right_pop_menu->addAction(action_delete_atom);
+    this->m_right_pop_menu->addAction(action_change_atom);
 
     this->m_atoms3d = new Atoms3D(this->m_root_widget, m_root_entity);
 
@@ -53,7 +52,6 @@ Qt3DWindowCustom::Qt3DWindowCustom(QWidget* parent, QLayout* vlayout, QHBoxLayou
     this->m_camera_entity->setFieldOfView(10);
     this->m_camera_entity->setNearPlane(0.01);
     this->m_camera_entity->setFarPlane(1000);
-
 
     int n = 0;
     float mean_x = 0, mean_y = 0, mean_z = 0;
@@ -76,7 +74,6 @@ Qt3DWindowCustom::Qt3DWindowCustom(QWidget* parent, QLayout* vlayout, QHBoxLayou
               << std::endl;
     this->m_camera_entity->setPosition(QVector3D(0, 0, mean_z * 5));
     this->m_camera_entity->setUpVector(QVector3D(0, 1, 0));
-
 
     auto light_entity_1 = new Qt3DCore::QEntity(m_root_entity);
     auto light_1 = new Qt3DRender::QPointLight(light_entity_1);
@@ -127,6 +124,7 @@ void Qt3DWindowCustom::handle_picker_click(const Qt3DRender::QPickEvent* pick) {
     std::cout << "Clicked " << "object name: " 
               << pick->entity()->objectName().toStdString() 
               << std::endl;
+
     std::cout << "Pick Position"
               << " ->x " << pick->position().x()
               << " ->y " << pick->position().y() 

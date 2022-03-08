@@ -32,7 +32,13 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QMenuBar>
 
+#include <boost/filesystem.hpp>
+
+#include "config/config_manager.h"
 #include "modeling/qt3dwindow_custom.h"
+
+
+namespace fs = boost::filesystem;
 
 
 class MainWindow : public QMainWindow {
@@ -45,6 +51,7 @@ public:
 
     void export_to_image();
     void popup_about();
+    void popup_config();
 
     QWidget* m_central_widget;
 
@@ -55,7 +62,7 @@ public:
 
     QTabWidget* m_root_tabwidget;
 
-
+    ConfigManager m_config_manager;
 private slots:
 
 private:
