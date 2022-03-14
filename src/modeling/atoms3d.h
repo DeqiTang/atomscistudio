@@ -18,7 +18,6 @@
  *
  ***********************************************************************/
 
-
 #ifndef MODELING_ATOMS3D_H
 #define MODELING_ATOMS3D_H
 
@@ -57,9 +56,7 @@ public:
 
     void clean_draw();
     void draw_atoms();
-
     void disable_removed_atoms();
-
     void set_atom_status_by_id(int id, AtomStatus);
 
     Qt3DCore::QEntity* m_root_entity;
@@ -77,14 +74,11 @@ signals:
 public slots:
 
     void enable_atoms_entity(bool enabled);
-
     void handle_picker_press(const Qt3DRender::QPickEvent* pick);
     void handle_picker_click(const Qt3DRender::QPickEvent* pick);
-
     void handle_delete_atom();
 
 private:
-
     std::shared_ptr<atomsciflow::AtomicRadius> m_atomic_radius;
     std::shared_ptr<AtomicColor> m_atomic_color;
 };
@@ -93,6 +87,5 @@ class AtomStatusComponent : public Qt3DCore::QComponent {
 public:
     Atoms3D::AtomStatus status;
 };
-
 
 #endif // MODELING_ATOMS3D_H

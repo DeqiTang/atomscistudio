@@ -18,7 +18,6 @@
  *
  ***********************************************************************/
 
-
 #include "main/mainwindow.h"
 
 #include <iostream>
@@ -118,7 +117,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     action_view_plots_polar->setObjectName(tr("Polar"));
     action_view_plots_polar->setText(tr("Polar"));
 
-
     auto menu_modeling = new QMenu(m_root_menubar);
     this->m_root_menubar->addMenu(menu_modeling);
     menu_modeling->setTitle("&Modeling");
@@ -174,7 +172,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     action_help_config->setText(tr("Config"));
     QObject::connect(action_help_config, &QAction::triggered, this, &MainWindow::popup_config);
 
-
     this->m_central_widget = new QWidget(this);
     this->setCentralWidget(this->m_central_widget);
     this->m_central_widget->setWindowTitle(QStringLiteral("Atom Science Studio"));
@@ -217,7 +214,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     this->m_root_tabwidget->addTab(tab2, QObject::tr("Calculation"));
 }
 
-
 void MainWindow::export_to_image() {
     auto fd = new QFileDialog(this->m_central_widget);
     fd->setWindowTitle(QObject::tr("Output image path"));
@@ -243,7 +239,11 @@ void MainWindow::popup_about() {
 
 void MainWindow::popup_config() {
     auto msg_box = new QMessageBox(this->m_central_widget);
-    msg_box->setText("About Atomscistudio (version 0.0.0)");
+    std::string text;
+    text += "About Atomscistudio (version ";
+    text += this->m_config_manager.config_ptree.get<std::string>("version");
+    text += ")";
+    msg_box->setText(tr(text.c_str()));
     std::string info_text = "";
     info_text += "The home dir: ";
     info_text += m_config_manager.get_home_dir();

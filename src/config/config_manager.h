@@ -18,7 +18,6 @@
  *
  ***********************************************************************/
 
-
 #ifndef CONFIGMANAGER_H
 #define CONFIGMANAGER_H
 
@@ -34,7 +33,6 @@ public:
 
     std::string get_home_dir();
     std::string get_config_dir();
-
     void init_json();
 
     std::string home_dir;

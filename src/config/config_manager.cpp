@@ -1,3 +1,23 @@
+/************************************************************************
+ *
+ * Atom Science Studio
+ * Copyright (C) 2022  Deqi Tang
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
 #include "config_manager.h"
 
 #include <cstdlib>
@@ -24,7 +44,6 @@ ConfigManager::ConfigManager() {
     init_json();
 }
 
-
 std::string ConfigManager::get_home_dir() {
 
     std::string home_dir;
@@ -38,9 +57,7 @@ std::string ConfigManager::get_home_dir() {
     home_dir = (fs::path(std::string(home_drive)) / std::string(home_path)).string();
 #endif
     return home_dir;
-
 }
-
 
 std::string ConfigManager::get_config_dir() {
 
@@ -55,12 +72,13 @@ std::string ConfigManager::get_config_dir() {
     return config_dir;
 }
 
-
 void ConfigManager::init_json() {
+
     if (false == fs::exists(fs::path(this->home_dir) / "config.json")) {
         config_ptree.add("version", "0.0.0");
         pt::write_json((fs::path(this->home_dir) / ".atomscistudio/config.json").string(), this->config_ptree);
     } else {
         pt::read_json((fs::path(this->home_dir) / "config.json").string(), this->config_ptree);
     }
+
 }
