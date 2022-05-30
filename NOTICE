@@ -685,7 +685,7 @@ License of third party softwares: Qt LGPL v3
 ================================================================
 Atomscistudio makes use of Qt.
 The open source use of Qt is licensed under LGPL v3 and GPL v3.
-not all modules of Qt is under LGPL v3, but nearly all of them
+Not all modules of Qt is under LGPL v3, but nearly all of them
 are under GPL v3. So it is ok to use Qt, as Atomscistudio is 
 licensed under GPL v3.
 The LGPL v3 is attached:
