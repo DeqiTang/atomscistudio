@@ -18,45 +18,38 @@
  *
  ***********************************************************************/
 
-/// TODO:
-/// Currently we use QTabWidget to separate the different space
-/// with different functionality, which might be replaced by
-/// more flexible QStackWidget + QComboBox in the future.
+#ifndef MODELING_OCC_MODELING_TOOLS_H
+#define MODELING_OCC_MODELING_TOOLS_H
 
-#ifndef MAIN_MAINWINDOW_H
-#define MAIN_MAINWINDOW_H
+#include <QWidget>
+#include <QtCore/QVariant>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
 
-#include <QMainWindow>
-#include <QtWidgets/QHBoxLayout>
-#include <QMenuBar>
+#include "modeling_occ/modeling.h"
 
-#include <boost/filesystem.hpp>
-
-#include "config/config_manager.h"
-
-namespace fs = boost::filesystem;
-
-class MainWindow : public QMainWindow {
+class ModelingTools : public QWidget {
     Q_OBJECT
 public:
-    MainWindow(QWidget* parent = nullptr);
-    ~MainWindow() {
-    };
+    explicit ModelingTools(QWidget* parent = nullptr, ModelingControl* modeling_widget = nullptr);
 
-    void export_to_image();
-    void popup_about();
-    void popup_config();
+    void set_modeling_widget(ModelingControl* modeling_widget) {
+        this->m_modeling_widget = modeling_widget;
+    }
 
-    QWidget* m_central_widget;
-    QMenuBar* m_root_menubar;
-    QHBoxLayout* m_root_hlayout;
-    QVBoxLayout* m_root_vlayout;
-    QTabWidget* m_root_tabwidget;
-    ConfigManager m_config_manager;
+    ModelingControl* m_modeling_widget; // never destory this resource in this class
+
+signals:
+
 private slots:
 
-private:
-
+    void on_checkbox_state_changed(int arg1);
 };
 
-#endif // MAIN_MAINWINDOW_H
+#endif // MODELING_OCC_MODELING_TOOLS_H

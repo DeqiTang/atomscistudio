@@ -25,11 +25,15 @@
 #include <QSplitter>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QScreen>
 
 #include <atomsciflow/base/crystal.h>
 
-#include "modeling/qt3dwindow_custom.h"
-#include "modeling/tools.h"
+//#include "modeling/qt3dwindow_custom.h"
+//#include "modeling/tools.h"
+#include "modeling_occ/modeling.h"
+#include "modeling_occ/modeling_tools.h"
+
 #include "calc/calccontrol.h"
 #include "config/config_manager.h"
 
@@ -186,6 +190,30 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     this->m_root_vlayout->addWidget(this->m_root_tabwidget);
     this->m_root_tabwidget->setTabPosition(QTabWidget::West);
 
+//    auto tab1 = new QWidget(this->m_central_widget);
+//    this->m_root_tabwidget->addTab(tab1, QObject::tr("Modeling"));
+//    auto tab1_hsplitter = new QSplitter(this->m_central_widget);
+//    auto tab1_hlayout= new QHBoxLayout(tab1);
+//    tab1->setLayout(tab1_hlayout);
+//    tab1_hlayout->addWidget(tab1_hsplitter);
+//    tab1_hsplitter->setOrientation(Qt::Orientation::Horizontal);
+//    tab1_hsplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//    tab1_hsplitter->setVisible(true);
+//    tab1_hsplitter->setHandleWidth(7);
+//    tab1_hsplitter->setFrameShape(QFrame::StyledPanel);
+//    tab1_hsplitter->setFrameShadow(QFrame::Plain);
+//    tab1_hsplitter->setStyleSheet("QSplitter::handle {background-color: gray}");
+
+//    auto tab1_vlayout = new QVBoxLayout(tab1);
+//    auto qt3dwin = new Qt3DWindowCustom(tab1, tab1_vlayout, tab1_hlayout);
+//    QWidget* win_container = QWidget::createWindowContainer(qt3dwin);
+//    auto tools = new Tools(this->m_central_widget, qt3dwin);
+//    tab1_hsplitter->addWidget(tools);
+//    tab1_hsplitter->addWidget(win_container);
+//    QSize screenSize = this->screen()->size();
+//    win_container->setMinimumSize(QSize(200, 100));
+//    win_container->setMaximumSize(screenSize);
+
     auto tab1 = new QWidget(this->m_central_widget);
     this->m_root_tabwidget->addTab(tab1, QObject::tr("Modeling"));
     auto tab1_hsplitter = new QSplitter(this->m_central_widget);
@@ -201,17 +229,17 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     tab1_hsplitter->setStyleSheet("QSplitter::handle {background-color: gray}");
 
     auto tab1_vlayout = new QVBoxLayout(tab1);
-    auto qt3dwin = new Qt3DWindowCustom(tab1, tab1_vlayout, tab1_hlayout);
-    QWidget* win_container = QWidget::createWindowContainer(qt3dwin);
-    auto tools = new Tools(this->m_central_widget, qt3dwin);
-    tab1_hsplitter->addWidget(tools);
-    tab1_hsplitter->addWidget(win_container);
-    QSize screenSize = this->screen()->size();
-    win_container->setMinimumSize(QSize(200, 100));
-    win_container->setMaximumSize(screenSize);
+    auto modeling_widget = new ModelingControl(this->m_central_widget);
+    auto modeling_tools = new ModelingTools(this->m_central_widget, modeling_widget);
+    tab1_hsplitter->addWidget(modeling_tools);
+    tab1_hsplitter->addWidget(modeling_widget);
+    QSize screen_size = this->screen()->size();
+    modeling_widget->setMinimumSize(1200, 800);
+    modeling_widget->setMaximumSize(screen_size);
 
     auto tab2 = new CalcControl(this->m_central_widget);
     this->m_root_tabwidget->addTab(tab2, QObject::tr("Calculation"));
+
 }
 
 void MainWindow::export_to_image() {

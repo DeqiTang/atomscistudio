@@ -18,45 +18,36 @@
  *
  ***********************************************************************/
 
-/// TODO:
-/// Currently we use QTabWidget to separate the different space
-/// with different functionality, which might be replaced by
-/// more flexible QStackWidget + QComboBox in the future.
+#ifndef MODELING_OCC_MODELING_H
+#define MODELING_OCC_MODELING_H
 
-#ifndef MAIN_MAINWINDOW_H
-#define MAIN_MAINWINDOW_H
+#include <QWidget>
+#include <QVBoxLayout>
 
-#include <QMainWindow>
-#include <QtWidgets/QHBoxLayout>
-#include <QMenuBar>
+#include <AIS_ColoredShape.hxx>
 
-#include <boost/filesystem.hpp>
+#include <atomsciflow/base/crystal.h>
+#include <atomsciflow/base/atomic_radius.h>
 
-#include "config/config_manager.h"
+#include "modeling/atomic_color.h"
+#include "modeling_occ/occview.h"
 
-namespace fs = boost::filesystem;
-
-class MainWindow : public QMainWindow {
+class ModelingControl : public QWidget {
     Q_OBJECT
 public:
-    MainWindow(QWidget* parent = nullptr);
-    ~MainWindow() {
-    };
+    ModelingControl(QWidget* parent = nullptr);
+    ~ModelingControl() = default;
 
-    void export_to_image();
-    void popup_about();
-    void popup_config();
+    void draw_atoms();
 
-    QWidget* m_central_widget;
-    QMenuBar* m_root_menubar;
-    QHBoxLayout* m_root_hlayout;
-    QVBoxLayout* m_root_vlayout;
-    QTabWidget* m_root_tabwidget;
-    ConfigManager m_config_manager;
-private slots:
+    std::shared_ptr<atomsciflow::Crystal> m_crystal;
 
 private:
 
-};
+    QVBoxLayout* m_layout;
 
-#endif // MAIN_MAINWINDOW_H
+    std::shared_ptr<atomsciflow::AtomicRadius> m_atomic_radius;
+    std::shared_ptr<AtomicColor> m_atomic_color;
+    OccView* m_occview;
+};
+#endif // MODELING_OCC_MODELING_H

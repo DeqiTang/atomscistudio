@@ -16,15 +16,29 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Core OpenGL Gui 3DCore 3DR
 #find_package(GLUT REQUIRED)
 #include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
+find_package(OpenCASCADE COMPONENTS FoundationClasses REQUIRED)
+find_package(OpenCASCADE COMPONENTS ModelingAlgorithms REQUIRED)
+find_package(OpenCASCADE COMPONENTS Visualization REQUIRED)
+find_package(OpenCASCADE COMPONENTS ModelingData REQUIRED)
+find_package(OpenCASCADE COMPONENTS DataExchange REQUIRED)
+include_directories(
+    ${OpenCASCADE_INCLUDE_DIR}
+)
+link_directories(
+    ${OpenCASCADE_LIBRARY_DIR}
+)
+link_libraries(
+    ${OpenCASCADE_LIBRARIES}
+)
 
 include_directories(
-    ${QT_QTOPENGL_INCLUDE_DIR} 
-    ${OPENGL_INCLUDE_DIR} 
+    ${QT_QTOPENGL_INCLUDE_DIR}
+    ${OPENGL_INCLUDE_DIR}
 )
 
 find_package(Boost COMPONENTS program_options filesystem system  REQUIRED)
-include_directories( 
-    ${Boost_INCLUDE_DIR}  
+include_directories(
+    ${Boost_INCLUDE_DIR}
 )
 link_libraries(${Boost_LIBRARIES})
 
@@ -37,7 +51,7 @@ if (NOT ${YAML_CPP_PKGCONFIG_DIR} STREQUAL "UNSET")
         set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:${YAML_CPP_PKGCONFIG_DIR}") # separated by colon
     endif()
     message(STATUS "PKG_CONFIG_PATH: $ENV{PKG_CONFIG_PATH}")
-endif()    
+endif()
 pkg_check_modules(YAML_CPP yaml-cpp)
 include_directories(${YAML_CPP_INCLUDE_DIRS})
 link_directories(${YAML_CPP_LIBRARY_DIRS})
@@ -99,16 +113,18 @@ file(GLOB PROJECT_SOURCES
     ./src/main/*.h
     ./src/main/*.cpp
 
-    ./src/modeling/*.h
-    ./src/modeling/*.cpp
+    ./src/modeling/atomic_color.h
+#    ./src/modeling/*.cpp
 
     ./src/calc/*.h
     ./src/calc/*.cpp
 
     ./src/config/*.h
     ./src/config/*.cpp
-)
 
+    ./src/modeling_occ/*.h
+    ./src/modeling_occ/*.cpp
+)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     #if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -125,7 +141,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         qt_add_executable(atomscistudio
             ${PROJECT_SOURCES}
         )
-    endif()        
+    endif()
 else()
     if(ANDROID)
         add_library(atomscistudio SHARED

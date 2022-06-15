@@ -8,27 +8,30 @@ on:
     branches: [ master ]
 jobs:
   build-for-macos:
-    runs-on: [macos-10.15] 
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-12, macos-11, macos-10.15]
-        qt_version: [6.2.2]
+        qt_version: [6.3.0]
     env:
       executable: atomscistudio
     steps:
       - name: Install dependencies using brew
         run: |
-          brew install llvm 
+          brew install llvm
+          brew install boost
           brew install openssl@3
           brew install yaml-cpp 
           #brew install qt
+          brew install opencascade
+          brew install googletest
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.14.0
         with:
           version: ${{ matrix.qt_version }}
           host: 'mac'
           target: 'desktop'
-          aqtversion: '==2.0.5'
+          aqtversion: '==2.1.0'
           modules: 'qt3d'
       - name: Install libssh2
         run: |
@@ -36,17 +39,13 @@ jobs:
           tar -xvf libssh2-1.10.0.tar.gz
           cmake libssh2-1.10.0 -B build_libssh2
           cmake --build build_libssh2
-          cmake --install build_libssh2       
-      - name: Install boost
-        run: brew install boost
-      - name: Install gtest
-        uses: MarkusJx/googletest-installer@v1.1
+          cmake --install build_libssh2
       - name: Install armadillo
         run: brew install armadillo
       - name: Install atomsciflow
         run: |
           git clone https://github.com/deqitang/atomsciflow.git
-          cmake atomsciflow -B build -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl@3 
+          cmake atomsciflow -B build -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl@3 -DBUILD_CMD=OFF -DBUILD_TEST=ON
           cmake --build build
           cmake --install build
         shell: bash
@@ -62,13 +61,13 @@ jobs:
           cp LICENSE build/${executable}.app/Contents/
           cp NOTICE build/${executable}.app/Contents/
           mkdir -p build/${executable}.app/Contents/third_party/license
-          cp third_party/license/* build/${executable}.app/Contents/third_party/license
+          cp -r third_party/license/* build/${executable}.app/Contents/third_party/license
       - name: packaging
         run: |
           macdeployqt build/${executable}.app -verbose=2 -dmg
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.executable }}-${{ matrix.os }}-${{matrix.qt_version}}.app
+          name: ${{ env.executable }}-${{ matrix.os }}.app
           path: build/${{ env.executable }}.app
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')
@@ -76,7 +75,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/${{ env.executable }}.dmg
-          asset_name: ${{ env.executable }}-${{ matrix.os }}-${{ matrix.qt_version }}.dmg
+          asset_name: ${{ env.executable }}-${{ matrix.os }}.dmg
           tag: ${{ github.ref }}
           overwrite: true          
-
