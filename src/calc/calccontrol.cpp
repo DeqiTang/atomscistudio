@@ -54,7 +54,8 @@ CalcControl::CalcControl(QWidget *parent) : QWidget{parent} {
 
     YAML::Node yaml_node = YAML::Load("[1, 2, 3, 4, 5]");
     for (int i = 0; i < yaml_node.size(); i++) {
-        std::cout << yaml_node[i].as<int>() << std::endl;
+//        std::cout << yaml_node[i].as<int>() << std::endl;
+        yaml_node[i].as<int>();
     }
 
 }
