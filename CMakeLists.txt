@@ -11,7 +11,19 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(QT_VERSION_MAJOR 6)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Core OpenGL Gui 3DCore 3DRender 3DInput 3DExtras Concurrent REQUIRED)
+find_package(Qt6 COMPONENTS
+    Widgets
+    Core
+    OpenGL
+    Gui
+    3DCore
+    3DRender
+    3DInput
+    3DLogic
+    3DExtras
+    Concurrent
+    REQUIRED
+)
 #find_package(OpenGL REQUIRED)
 #find_package(GLUT REQUIRED)
 #include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
